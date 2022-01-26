@@ -64,7 +64,18 @@ namespace S7DataBlockParser
             MemoryType = 'S';
         }
     }
-    
+
+    public class WStringDataType : S7DataType
+    {
+        public WStringDataType()
+        {
+            Name = "WString";
+            Size = 0;
+            Alignment = 16;
+            MemoryType = 'S';
+        }
+    }
+
     public class CharDataType : S7DataType
     {
         public CharDataType()
