@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace S7DataBlockParser
@@ -314,14 +313,26 @@ namespace S7DataBlockParser
             {
                 // Could be something in the form String[20] or a simple String (meaning 256 bytes long)
                 var splits = typeString.Split("[");
-                var length = splits.Length == 1 ? 254 : int.Parse(splits[1].Replace("]", ""));
+                var length = splits.Length == 1 ? 254 : int.Parse(splits[1].Replace("]", "")); //max length = 254 bytes
                 var stringType = new StringDataType
                 {
                     Size = (length + 2) * 8 // we use bits
                 };
                 return stringType;
-            } 
-            
+            }
+
+            if (typeString.StartsWith("WString"))
+            {
+                // Could be something in the form WString[20] or a simple WString (meaning 256 bytes long)
+                var splits = typeString.Split("[");
+                var length = splits.Length == 1 ? 254 : int.Parse(splits[1].Replace("]", "")); //max length = 16382 bytes
+                var wStringType = new WStringDataType
+                {
+                    Size = (length * 2 + 4) * 8 // we use bits
+                };
+                return wStringType;
+            }
+
             if (typeString.StartsWith("Array"))
             {
                 // Something in the form of Array[0..3] of "User_data_type_1"
